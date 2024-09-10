@@ -9,10 +9,9 @@ public class DatabaseConnection {
     private static DatabaseConnection instance;
     private Connection connection;
 
-    // Use the service name 'postgresql' from the Docker Compose configuration
-    private static final String URL = "jdbc:postgresql://localhost:5432/hotel_ges_p2";
-    private static final String USER = "Hotel_ges_p2";
-    private static final String PASSWORD = "1234";
+    private static final String URL = System.getenv("URL");
+    private static final String USER = System.getenv("USER");
+    private static final String PASSWORD = System.getenv("PASSWORD");
 
     private DatabaseConnection() {
         try {
