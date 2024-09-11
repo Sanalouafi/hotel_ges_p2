@@ -62,7 +62,7 @@ CREATE TABLE Pricing (
                              start_date DATE NOT NULL,
                              end_date DATE NOT NULL
 );
-
+CREATE TYPE ReservationStatus AS ENUM ('Canceled', 'Confirmed');
 CREATE TABLE Reservation (
                              id SERIAL PRIMARY KEY,
                              client_id INT REFERENCES Client(id) ON DELETE CASCADE,
