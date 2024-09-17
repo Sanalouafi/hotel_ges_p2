@@ -90,7 +90,7 @@ public class RoomDaoImpl implements RoomDao {
     private Room createRoomFromResultSet(ResultSet resultSet) throws SQLException {
         return new Room(
                 resultSet.getInt("id"),
-                resultSet.getInt("hotel_id"), 
+                resultSet.getInt("hotel_id"),
                 resultSet.getString("room_number"),
                 RoomType.valueOf(resultSet.getString("room_type")),
                 resultSet.getBoolean("availability_status")
