@@ -4,10 +4,10 @@ import main.java.entities.Employee;
 
 import java.util.List;
 
-public abstract class EmployeeDao {
-    public abstract List<Employee> getAllEmployees();
-    public abstract Employee getEmployeeById(int employeeId);
-    public abstract void saveEmployee(Employee employee);
-    public abstract void updateEmployee(Employee employee);
-    public abstract void deleteEmployee(int employeeId);
+public interface EmployeeDao {
+    public  List<Employee> getAllEmployees();
+    public  Employee getEmployeeById(int employeeId);
+    public  void saveEmployee(Employee employee);
+    public  void updateEmployee(Employee employee);
+    public  void deleteEmployee(int employeeId);
 }

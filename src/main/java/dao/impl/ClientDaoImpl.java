@@ -8,7 +8,7 @@ import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 
-public class ClientDaoImpl extends ClientDao {
+public class ClientDaoImpl implements ClientDao {
 
     private final Connection connection;
 

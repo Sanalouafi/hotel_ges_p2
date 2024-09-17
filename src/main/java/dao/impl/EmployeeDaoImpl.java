@@ -10,7 +10,7 @@ import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 
-public class EmployeeDaoImpl extends EmployeeDao {
+public class EmployeeDaoImpl implements EmployeeDao {
 
     private final Connection connection;
 

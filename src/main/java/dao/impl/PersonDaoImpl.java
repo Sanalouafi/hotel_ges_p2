@@ -8,7 +8,7 @@ import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 
-public abstract class PersonDaoImpl extends PersonDao {
+public abstract class PersonDaoImpl implements PersonDao {
 
     protected Connection getConnection() {
         return DatabaseConnection.getInstance().getConnection();
