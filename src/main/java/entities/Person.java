@@ -1,5 +1,7 @@
 package main.java.entities;
 
+import main.java.utils.PasswordUtils;
+
 import java.sql.Timestamp;
 
 public class Person {
@@ -55,8 +57,8 @@ public class Person {
     public void setUsername(String username){
         this.username = username;
     }
-    public void setPassword(String password){
-        this.password = password;
+    public void setPassword(String password) {
+        this.password = PasswordUtils.hashPassword(password);
     }
     public void setEmail(String email){
         this.email = email;

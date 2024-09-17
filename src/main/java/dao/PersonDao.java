@@ -2,7 +2,7 @@ package main.java.dao;
 import main.java.entities.Person;
 import java.util.List;
 
-public class PersonDao {
+public abstract class PersonDao {
     public abstract List<Person> getAllPersons();
     public abstract Person getPersonById(int personId);
     public abstract void savePerson(Person person);

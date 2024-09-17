@@ -4,7 +4,7 @@ import main.java.entities.Employee;
 
 import java.util.List;
 
-public class EmployeeDao {
+public abstract class EmployeeDao {
     public abstract List<Employee> getAllEmployees();
     public abstract Employee getEmployeeById(int employeeId);
     public abstract void saveEmployee(Employee employee);
