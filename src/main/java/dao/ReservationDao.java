@@ -11,7 +11,7 @@ public interface ReservationDao {
     void saveReservation(Reservation reservation);
     void updateReservation(Reservation reservation);
     void deleteReservation(int reservationId);
-
+    List<Reservation> getReservationsBetweenDates(Date startDate, Date endDate);
     int getReservationCount();
     BigDecimal calculateTotalRevenue();
     double calculateOccupancyRate(Date startDate, Date endDate);

@@ -12,6 +12,11 @@ public class Hotel {
         this.location = location;
         this.contactInfo = contactInfo;
     }
+    public Hotel(String name, String location, String contactInfo) {
+        this.name = name;
+        this.location = location;
+        this.contactInfo = contactInfo;
+    }
     public int getId() {
         return id;
     }

@@ -29,6 +29,7 @@ public class HotelDaoImpl implements HotelDao {
 
     @Override
     public Hotel getHotelById(int hotelId) {
+
         String query = "SELECT * FROM Hotel WHERE id = ?";
         try (PreparedStatement preparedStatement = connection.prepareStatement(query)) {
             preparedStatement.setInt(1, hotelId);
@@ -85,11 +86,19 @@ public class HotelDaoImpl implements HotelDao {
     }
 
     private Hotel createHotelFromResultSet(ResultSet resultSet) throws SQLException {
-        return new Hotel(
-                resultSet.getInt("id"),
-                resultSet.getString("name"),
-                resultSet.getString("location"),
-                resultSet.getString("contact_info")
-        );
+        // Debug: Print out the retrieved values
+        int id = resultSet.getInt("id");
+        String name = resultSet.getString("name");
+        String location = resultSet.getString("location");
+        String contactInfo = resultSet.getString("contact_info");
+
+        System.out.println("Hotel ID: " + id);
+        System.out.println("Hotel Name: " + name);
+        System.out.println("Hotel Location: " + location);
+        System.out.println("Hotel Contact Info: " + contactInfo);
+
+
+        return new Hotel(id, name, location, contactInfo);
     }
+
 }

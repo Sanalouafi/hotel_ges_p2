@@ -215,4 +215,24 @@ public class ReservationDaoImpl implements ReservationDao {
         }
         return reservations;
     }
+    @Override
+    public List<Reservation> getReservationsBetweenDates(Date startDate, Date endDate) {
+        List<Reservation> reservations = new ArrayList<>();
+        String query = "SELECT * FROM reservation WHERE check_in_date <= ? AND check_out_date >= ?";
+
+        try (PreparedStatement preparedStatement = connection.prepareStatement(query)) {
+            preparedStatement.setDate(1, new java.sql.Date(endDate.getTime()));
+            preparedStatement.setDate(2, new java.sql.Date(startDate.getTime()));
+            ResultSet resultSet = preparedStatement.executeQuery();
+
+            while (resultSet.next()) {
+                reservations.add(createReservationFromResultSet(resultSet));
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();  // Consider using a logger
+        }
+
+        return reservations;
+    }
+
 }

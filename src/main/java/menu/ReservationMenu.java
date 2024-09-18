@@ -10,8 +10,8 @@ public class ReservationMenu {
     private ReservationService reservationService;
     private Scanner scanner;
 
-    public ReservationMenu() {
-        this.reservationService = new ReservationService();
+    public ReservationMenu(ReservationService reservationService) {
+        this.reservationService = reservationService;
         this.scanner = new Scanner(System.in);
     }
 

@@ -11,8 +11,8 @@ public class SeasonMenu {
     private SeasonService seasonService;
     private Scanner scanner;
 
-    public SeasonMenu() {
-        this.seasonService = new SeasonService();
+    public SeasonMenu(SeasonService seasonService) {
+        this.seasonService = seasonService;
         this.scanner = new Scanner(System.in);
     }
 
