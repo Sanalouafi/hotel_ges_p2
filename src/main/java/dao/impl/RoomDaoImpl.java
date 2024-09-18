@@ -96,4 +96,21 @@ public class RoomDaoImpl implements RoomDao {
                 resultSet.getBoolean("availability_status")
         );
     }
+    public boolean roomExists(int hotelId, String roomNumber) {
+        String query = "SELECT COUNT(*) FROM rooms WHERE hotel_id = ? AND room_number = ?";
+        try (Connection connection = DatabaseConnection.getInstance().getConnection();
+             PreparedStatement ps = connection.prepareStatement(query)) {
+
+            ps.setInt(1, hotelId);
+            ps.setString(2, roomNumber);
+            ResultSet rs = ps.executeQuery();
+
+            if (rs.next()) {
+                return rs.getInt(1) > 0;
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return false;
+    }
 }

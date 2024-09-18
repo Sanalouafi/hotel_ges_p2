@@ -4,14 +4,14 @@ import main.java.enums.RoomType;
 
 public class Room {
     private int id;
-    private int hotelId; // change from Hotel to hotelId
+    private int hotelId;
     private String roomNumber;
     private RoomType roomType;
     private boolean availabilityStatus;
 
     public Room(int id, int hotelId, String roomNumber, RoomType roomType, boolean availabilityStatus) {
         this.id = id;
-        this.hotelId = hotelId; // store hotel_id instead of the Hotel object
+        this.hotelId = hotelId;
         this.roomNumber = roomNumber;
         this.roomType = roomType;
         this.availabilityStatus = availabilityStatus;
