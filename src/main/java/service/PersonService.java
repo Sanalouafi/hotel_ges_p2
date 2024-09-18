@@ -4,6 +4,7 @@ import main.java.entities.Client;
 import main.java.entities.Employee;
 import main.java.dao.impl.ClientDaoImpl;
 import main.java.dao.impl.EmployeeDaoImpl;
+import main.java.utils.PasswordUtils;
 
 import java.sql.Date;
 import java.sql.Timestamp;
@@ -37,14 +38,15 @@ public class PersonService {
         System.out.println("Enter Client address: ");
         String address = scanner.nextLine();
         Timestamp createdAt = new Timestamp(System.currentTimeMillis());
-        Client client = new Client(0, name, username, password, email, phone, address, createdAt);
+
+        Client client = new Client(0, name, username, hashPassword(password), email, phone, address, createdAt);
         clientDaoImpl.saveClient(client);
     }
 
     public void updateClient() {
         System.out.println("Enter Client id: ");
         int id = scanner.nextInt();
-        scanner.nextLine(); 
+        scanner.nextLine();
         System.out.println("Enter Client name: ");
         String name = scanner.nextLine();
         System.out.println("Enter Client username: ");
@@ -58,7 +60,8 @@ public class PersonService {
         System.out.println("Enter Client address: ");
         String address = scanner.nextLine();
         Timestamp createdAt = new Timestamp(System.currentTimeMillis());
-        Client client = new Client(id, name, username, password, email, phone, address, createdAt);
+
+        Client client = new Client(id, name, username, hashPassword(password), email, phone, address, createdAt);
         clientDaoImpl.updateClient(client);
     }
 
@@ -94,16 +97,17 @@ public class PersonService {
         Date hireDate = Date.valueOf(scanner.nextLine());
         System.out.println("Enter Employee salary: ");
         BigDecimal salary = scanner.nextBigDecimal();
-        scanner.nextLine(); 
-        Timestamp createdAt = new Timestamp(System.currentTimeMillis());
-        Employee employee = new Employee(0, name, username, password, email, phone, address, createdAt, position, hireDate, salary);
+        scanner.nextLine();
+
+        
+        Employee employee = new Employee(0, name, username, hashPassword(password), email, phone, address, new Timestamp(System.currentTimeMillis()), position, hireDate, salary);
         employeeDaoImpl.saveEmployee(employee);
     }
 
     public void updateEmployee() {
         System.out.println("Enter Employee id: ");
         int id = scanner.nextInt();
-        scanner.nextLine(); 
+        scanner.nextLine();
         System.out.println("Enter Employee name: ");
         String name = scanner.nextLine();
         System.out.println("Enter Employee username: ");
@@ -122,9 +126,10 @@ public class PersonService {
         Date hireDate = Date.valueOf(scanner.nextLine());
         System.out.println("Enter Employee salary: ");
         BigDecimal salary = scanner.nextBigDecimal();
-        scanner.nextLine(); 
-        Timestamp createdAt = new Timestamp(System.currentTimeMillis());
-        Employee employee = new Employee(id, name, username, password, email, phone, address, createdAt, position, hireDate, salary);
+        scanner.nextLine();
+
+        
+        Employee employee = new Employee(id, name, username, hashPassword(password), email, phone, address, new Timestamp(System.currentTimeMillis()), position, hireDate, salary);
         employeeDaoImpl.updateEmployee(employee);
     }
 
@@ -138,5 +143,10 @@ public class PersonService {
         System.out.println("Enter Employee id: ");
         int id = scanner.nextInt();
         return employeeDaoImpl.getEmployeeById(id);
+    }
+
+    
+    private String hashPassword(String password) {
+        return PasswordUtils.hashPassword(password);
     }
 }
