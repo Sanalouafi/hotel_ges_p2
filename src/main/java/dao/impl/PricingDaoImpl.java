@@ -104,4 +104,5 @@ public class PricingDaoImpl implements PricingDao {
                 resultSet.getDate("end_date")
         );
     }
+
 }

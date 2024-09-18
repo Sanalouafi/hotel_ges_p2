@@ -90,9 +90,9 @@ public class Reservation {
     public String toString() {
         return "Reservation{" +
                 "id=" + id +
-                ", client=" + client +
-                ", hotel=" + hotel +
-                ", room=" + room +
+                ", client_id=" + client.getId() +
+                ", hotel_id=" + hotel.getId() +
+                ", room_id=" + room.getId() +
                 ", checkInDate=" + checkInDate +
                 ", checkOutDate=" + checkOutDate +
                 ", reservationDate=" + reservationDate +

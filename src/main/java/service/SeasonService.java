@@ -27,29 +27,17 @@ public class SeasonService {
         seasonDaoImpl.saveSeason(season);
     }
 
-    public void updateSeason() {
-        System.out.println("Enter Season id: ");
-        int id = scanner.nextInt();
-        scanner.nextLine();
-        System.out.println("Enter Season name: ");
-        String name = scanner.nextLine();
-        System.out.println("Enter Season start date (YYYY-MM-DD): ");
-        Date startDate = Date.valueOf(scanner.nextLine());
-        System.out.println("Enter Season end date (YYYY-MM-DD): ");
-        Date endDate = Date.valueOf(scanner.nextLine());
+    public void updateSeason(int id, String name, Date startDate, Date endDate) {
         Season season = new Season(id, name, startDate, endDate);
         seasonDaoImpl.updateSeason(season);
     }
 
-    public void deleteSeason() {
-        System.out.println("Enter Season id: ");
-        int id = scanner.nextInt();
+    public void deleteSeason(int id) {
+
         seasonDaoImpl.deleteSeason(id);
     }
 
-    public Season getSeasonById() {
-        System.out.println("Enter Season id: ");
-        int id = scanner.nextInt();
+    public Season getSeasonById(int id) {
         return seasonDaoImpl.getSeasonById(id);
     }
 }

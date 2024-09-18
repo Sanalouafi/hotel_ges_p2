@@ -9,4 +9,5 @@ public interface PricingDao {
     void savePricing(Pricing pricing);
     void updatePricing(Pricing pricing);
     void deletePricing(int pricingId);
+
 }
