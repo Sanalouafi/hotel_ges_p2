@@ -1,6 +1,9 @@
 package main.java.dao;
 
 import main.java.entities.Room;
+import main.java.enums.RoomType;
+
+import java.util.Date;
 import java.util.List;
 
 public interface RoomDao {
@@ -9,4 +12,5 @@ public interface RoomDao {
     void saveRoom(Room room);
     void updateRoom(Room room);
     void deleteRoom(int roomId);
+    void bookAvailableRoom(RoomType roomType, Date startDate, Date endDate);
 }

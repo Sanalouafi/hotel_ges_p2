@@ -6,12 +6,14 @@ import main.java.entities.Room;
 import main.java.enums.RoomType;
 
 import java.sql.*;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
+import java.util.Date;
+import java.util.stream.Collectors;
 
 public class RoomDaoImpl implements RoomDao {
 
     private Connection connection = DatabaseConnection.getInstance().getConnection();
+    private Map<RoomType,Room> allDispoRooms = new HashMap<>();
 
     @Override
     public List<Room> getAllRooms() {
@@ -112,5 +114,27 @@ public class RoomDaoImpl implements RoomDao {
             e.printStackTrace();
         }
         return false;
+    }
+
+    @Override
+    public void bookAvailableRoom(RoomType roomType, Date startDate, Date endDate) {
+        String query = "SELECT * FROM Room WHERE room_type = ? ";
+        try (Connection connection = DatabaseConnection.getInstance().getConnection();
+             PreparedStatement ps = connection.prepareStatement(query)) {
+            ps.setString(1, roomType.name());
+            ResultSet rs = ps.executeQuery();
+            allDispoRooms.put(roomType, createRoomFromResultSet(rs));
+            allDispoRooms.values().stream().
+                    filter(allDispoRooms->allDispoRooms.isAvailabilityStatus())
+                    .collect(Collectors.toCollection(ArrayList::new))
+            ;
+
+
+            
+
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
     }
 }

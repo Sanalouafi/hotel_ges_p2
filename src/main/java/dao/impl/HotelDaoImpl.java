@@ -86,7 +86,6 @@ public class HotelDaoImpl implements HotelDao {
     }
 
     private Hotel createHotelFromResultSet(ResultSet resultSet) throws SQLException {
-        // Debug: Print out the retrieved values
         int id = resultSet.getInt("id");
         String name = resultSet.getString("name");
         String location = resultSet.getString("location");
