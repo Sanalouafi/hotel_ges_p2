@@ -29,14 +29,70 @@ public class Reservation {
         this.status = status;
     }
 
+    public int getId() {
+        return id;
+    }
+    public void setId(int id) {
+        this.id = id;
+    }
+    public Client getClient() {
+        return client;
+    }
+    public void setClient(Client client) {
+        this.client = client;
+    }
+    public Hotel getHotel() {
+        return hotel;
+    }
+    public void setHotel(Hotel hotel) {
+        this.hotel = hotel;
+    }
+    public Room getRoom() {
+        return room;
+    }
+    public void setRoom(Room room) {
+        this.room = room;
+    }
+    public Date getCheckInDate() {
+        return checkInDate;
+    }
+    public void setCheckInDate(Date checkInDate) {
+        this.checkInDate = checkInDate;
+    }
+    public Date getCheckOutDate() {
+        return checkOutDate;
+    }
+    public void setCheckOutDate(Date checkOutDate) {
+        this.checkOutDate = checkOutDate;
+    }
+    public Timestamp getReservationDate() {
+        return reservationDate;
+    }
+    public void setReservationDate(Timestamp reservationDate) {
+        this.reservationDate = reservationDate;
+    }
+    public BigDecimal getTotalPrice() {
+        return totalPrice;
+    }
+    public void setTotalPrice(BigDecimal totalPrice) {
+        this.totalPrice=totalPrice;
+    }
+    public ReservationStatus getStatus() {
+        return status;
+    }
+    public void setStatus(ReservationStatus status) {
+        this.status = status;
+    }
+
+
 
     @Override
     public String toString() {
         return "Reservation{" +
                 "id=" + id +
-                ", clientId=" + client +
-                ", hotelId=" + hotel +
-                ", roomId=" + room +
+                ", client=" + client +
+                ", hotel=" + hotel +
+                ", room=" + room +
                 ", checkInDate=" + checkInDate +
                 ", checkOutDate=" + checkOutDate +
                 ", reservationDate=" + reservationDate +
