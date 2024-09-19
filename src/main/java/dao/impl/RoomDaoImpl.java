@@ -6,14 +6,15 @@ import main.java.entities.Room;
 import main.java.enums.RoomType;
 
 import java.sql.*;
-import java.util.*;
-import java.util.Date;
-import java.util.stream.Collectors;
+import java.util.ArrayList;
+import java.util.List;
 
 public class RoomDaoImpl implements RoomDao {
+    private Connection connection;
 
-    private Connection connection = DatabaseConnection.getInstance().getConnection();
-    private Map<RoomType,Room> allDispoRooms = new HashMap<>();
+    public RoomDaoImpl() {
+        this.connection = DatabaseConnection.getInstance().getConnection();
+    }
 
     @Override
     public List<Room> getAllRooms() {
@@ -45,29 +46,37 @@ public class RoomDaoImpl implements RoomDao {
         return null;
     }
 
+
     @Override
     public void saveRoom(Room room) {
-        String query = "INSERT INTO Room (hotel_id, room_number, room_type, availability_status) VALUES (?, ?, ?, ?)";
-        try (PreparedStatement preparedStatement = connection.prepareStatement(query, Statement.RETURN_GENERATED_KEYS)) {
-            preparedStatement.setInt(1, room.getHotelId()); // pass hotelId directly
+        String query = "INSERT INTO Room (hotel_id, room_number, room_type, availability_status) VALUES (?, ?, CAST(? AS roomtype), ?)";
+        try (Connection connection = DatabaseConnection.getInstance().getConnection();
+             PreparedStatement preparedStatement = connection.prepareStatement(query, Statement.RETURN_GENERATED_KEYS)) {
+            preparedStatement.setInt(1, room.getHotelId());
             preparedStatement.setString(2, room.getRoomNumber());
-            preparedStatement.setString(3, room.getRoomType().name());
+            preparedStatement.setString(3, room.getRoomType().name()); // Convert RoomType to String
             preparedStatement.setBoolean(4, room.isAvailabilityStatus());
             preparedStatement.executeUpdate();
-            ResultSet resultSet = preparedStatement.getGeneratedKeys();
-            if (resultSet.next()) {
-                room.setId(resultSet.getInt(1));
+
+            // Retrieve the generated key
+            try (ResultSet resultSet = preparedStatement.getGeneratedKeys()) {
+                if (resultSet.next()) {
+                    room.setId(resultSet.getInt(1)); // Set the generated ID
+                }
             }
         } catch (SQLException e) {
             e.printStackTrace();
         }
     }
 
+
+
+
     @Override
     public void updateRoom(Room room) {
         String query = "UPDATE Room SET hotel_id = ?, room_number = ?, room_type = ?, availability_status = ? WHERE id = ?";
         try (PreparedStatement preparedStatement = connection.prepareStatement(query)) {
-            preparedStatement.setInt(1, room.getHotelId()); // pass hotelId directly
+            preparedStatement.setInt(1, room.getHotelId());
             preparedStatement.setString(2, room.getRoomNumber());
             preparedStatement.setString(3, room.getRoomType().name());
             preparedStatement.setBoolean(4, room.isAvailabilityStatus());
@@ -98,15 +107,13 @@ public class RoomDaoImpl implements RoomDao {
                 resultSet.getBoolean("availability_status")
         );
     }
-    public boolean roomExists(int hotelId, String roomNumber) {
-        String query = "SELECT COUNT(*) FROM rooms WHERE hotel_id = ? AND room_number = ?";
-        try (Connection connection = DatabaseConnection.getInstance().getConnection();
-             PreparedStatement ps = connection.prepareStatement(query)) {
 
+    public boolean roomExists(int hotelId, String roomNumber) {
+        String query = "SELECT COUNT(*) FROM Room WHERE hotel_id = ? AND room_number = ?";
+        try (PreparedStatement ps = connection.prepareStatement(query)) {
             ps.setInt(1, hotelId);
             ps.setString(2, roomNumber);
             ResultSet rs = ps.executeQuery();
-
             if (rs.next()) {
                 return rs.getInt(1) > 0;
             }
@@ -116,23 +123,12 @@ public class RoomDaoImpl implements RoomDao {
         return false;
     }
 
-    @Override
-    public void bookAvailableRoom(RoomType roomType, Date startDate, Date endDate) {
-        String query = "SELECT * FROM Room WHERE room_type = ? ";
-        try (Connection connection = DatabaseConnection.getInstance().getConnection();
-             PreparedStatement ps = connection.prepareStatement(query)) {
-            ps.setString(1, roomType.name());
-            ResultSet rs = ps.executeQuery();
-            allDispoRooms.put(roomType, createRoomFromResultSet(rs));
-            allDispoRooms.values().stream().
-                    filter(allDispoRooms->allDispoRooms.isAvailabilityStatus())
-                    .collect(Collectors.toCollection(ArrayList::new))
-            ;
-
-
-            
-
-
+    public void updateRoomAvailability(int roomId, boolean isAvailable) {
+        String sql = "UPDATE Room SET availability_status = ? WHERE id = ?";
+        try (PreparedStatement statement = connection.prepareStatement(sql)) {
+            statement.setBoolean(1, isAvailable);
+            statement.setInt(2, roomId);
+            statement.executeUpdate();
         } catch (SQLException e) {
             e.printStackTrace();
         }

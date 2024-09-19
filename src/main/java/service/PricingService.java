@@ -45,13 +45,7 @@ public class PricingService {
 
         scanner.nextLine();
 
-        System.out.println("Enter Start Date (YYYY-MM-DD): ");
-        Date startDate = Date.valueOf(scanner.nextLine());
-
-        System.out.println("Enter End Date (YYYY-MM-DD): ");
-        Date endDate = Date.valueOf(scanner.nextLine());
-
-        Pricing pricing = new Pricing(0, roomType, season, event, basePrice, priceMultiplier, startDate, endDate);
+        Pricing pricing = new Pricing(0, roomType, season, event, basePrice, priceMultiplier);
         pricingDaoImpl.savePricing(pricing);
         System.out.println("Pricing saved successfully.");
     }
@@ -86,13 +80,8 @@ public class PricingService {
 
         scanner.nextLine();  // Clear buffer
 
-        System.out.println("Enter Start Date (YYYY-MM-DD): ");
-        Date startDate = Date.valueOf(scanner.nextLine());
 
-        System.out.println("Enter End Date (YYYY-MM-DD): ");
-        Date endDate = Date.valueOf(scanner.nextLine());
-
-        Pricing pricing = new Pricing(id, roomType, season, event, basePrice, priceMultiplier, startDate, endDate);
+        Pricing pricing = new Pricing(id, roomType, season, event, basePrice, priceMultiplier);
         pricingDaoImpl.updatePricing(pricing);
         System.out.println("Pricing updated successfully.");
     }
