@@ -278,7 +278,7 @@ public class ReservationDaoImpl implements ReservationDao {
                         resultSet.getDate("check_out_date"),
                         resultSet.getTimestamp("reservation_date"),
                         resultSet.getBigDecimal("total_price"),
-                        ReservationStatus.valueOf(resultSet.getString("status")) // Assuming status is stored as a String
+                        ReservationStatus.valueOf(resultSet.getString("status"))
                 );
                 reservations.add(reservation);
             }
@@ -320,7 +320,7 @@ public class ReservationDaoImpl implements ReservationDao {
                 "JOIN room AS r ON res.room_id = r.id " +
                 "WHERE r.room_type = ?";
         try (PreparedStatement preparedStatement = connection.prepareStatement(query)) {
-            preparedStatement.setString(1, roomType.name());  // Assuming RoomType is an enum
+            preparedStatement.setString(1, roomType.name());
             ResultSet resultSet = preparedStatement.executeQuery();
             while (resultSet.next()) {
                 reservations.add(createReservationFromResultSet(resultSet));
