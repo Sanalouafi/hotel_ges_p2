@@ -15,9 +15,9 @@ public class Reservation {
     private Date checkOutDate;
     private Timestamp reservationDate;
     private BigDecimal totalPrice;
-    private ReservationStatus status;
+    private ReservationStatus reservationStatus;
 
-    public Reservation(int id, Client clientI, Hotel hotel, Room room, Date checkInDate, Date checkOutDate, Timestamp reservationDate, BigDecimal totalPrice, ReservationStatus status) {
+    public Reservation(int id, Client client, Hotel hotel, Room room, Date checkInDate, Date checkOutDate, Timestamp reservationDate, BigDecimal totalPrice, ReservationStatus reservationStatus) {
         this.id = id;
         this.client = client;
         this.hotel = hotel;
@@ -26,8 +26,9 @@ public class Reservation {
         this.checkOutDate = checkOutDate;
         this.reservationDate = reservationDate;
         this.totalPrice = totalPrice;
-        this.status = status;
+        this.reservationStatus = reservationStatus != null ? reservationStatus : ReservationStatus.Confirmed; // Default to 'Confirmed'
     }
+
 
     public int getId() {
         return id;
@@ -77,11 +78,11 @@ public class Reservation {
     public void setTotalPrice(BigDecimal totalPrice) {
         this.totalPrice=totalPrice;
     }
-    public ReservationStatus getStatus() {
-        return status;
+    public ReservationStatus getReservationStatus() {
+        return reservationStatus;
     }
-    public void setStatus(ReservationStatus status) {
-        this.status = status;
+    public void setReservationStatus(ReservationStatus status) {
+        this.reservationStatus = status;
     }
 
 
@@ -97,7 +98,7 @@ public class Reservation {
                 ", checkOutDate=" + checkOutDate +
                 ", reservationDate=" + reservationDate +
                 ", totalPrice=" + totalPrice +
-                ", status='" + status + '\'' +
+                ", status='" + reservationStatus + '\'' +
                 '}';
     }
 }

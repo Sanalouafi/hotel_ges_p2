@@ -12,5 +12,5 @@ public interface RoomDao {
     void saveRoom(Room room);
     void updateRoom(Room room);
     void deleteRoom(int roomId);
-    void bookAvailableRoom(RoomType roomType, Date startDate, Date endDate);
+
 }

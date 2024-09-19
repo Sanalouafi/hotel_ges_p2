@@ -1,9 +1,10 @@
 package main.java.service;
 
+import main.java.dao.impl.RoomDaoImpl;
 import main.java.entities.Room;
 import main.java.enums.RoomType;
-import main.java.dao.impl.RoomDaoImpl;
 
+import java.util.List;
 import java.util.Scanner;
 
 public class RoomService {
@@ -56,7 +57,7 @@ public class RoomService {
             return;
         }
 
-        System.out.println("Enter Room type (e.g., SINGLE, DOUBLE, SUITE): ");
+        System.out.println("Enter Room type (e.g., Simple, Double, Suite): ");
         String roomTypeStr = scanner.nextLine();
         RoomType roomType = RoomType.valueOf(roomTypeStr.toUpperCase());
 
@@ -66,5 +67,17 @@ public class RoomService {
         Room room = new Room(id, hotelId, roomNumber, roomType, availabilityStatus);
         roomDaoImpl.updateRoom(room);
         System.out.println("Room updated successfully.");
+    }
+
+    public List<Room> getAllRooms() {
+        return roomDaoImpl.getAllRooms();
+    }
+
+    public Room getRoomById(int roomId) {
+        return roomDaoImpl.getRoomById(roomId);
+    }
+
+    public void deleteRoom(int roomId) {
+        roomDaoImpl.deleteRoom(roomId);
     }
 }

@@ -10,18 +10,32 @@ import main.java.entities.Hotel;
 import main.java.entities.Reservation;
 import main.java.entities.Room;
 import main.java.enums.ReservationStatus;
+import main.java.enums.RoomType;
 
 import java.sql.*;
 import java.math.BigDecimal;
-import java.util.ArrayList;
+import java.sql.Date;
+import java.util.*;
 import java.util.Date;
-import java.util.List;
 
 public class ReservationDaoImpl implements ReservationDao {
     private Connection connection = DatabaseConnection.getInstance().getConnection();
     private ClientDao clientDao = new ClientDaoImpl();
     private HotelDao hotelDao = new HotelDaoImpl();
     private RoomDao roomDao = new RoomDaoImpl();
+    private  RoomDaoImpl roomDaoImpl= new RoomDaoImpl();
+    private HashMap<String, Boolean> roomAvailability = new HashMap<>();
+
+    public ReservationDaoImpl() {
+        loadRoomAvailability();
+    }private void loadRoomAvailability() {
+        roomAvailability.put("101", true);
+        roomAvailability.put("102", true);
+        roomAvailability.put("103", true);
+        roomAvailability.put("104", false); // Example of an unavailable room
+        // Additional room data can be loaded here from DB
+    }
+
 
     @Override
     public List<Reservation> getAllReservations() {
@@ -53,23 +67,28 @@ public class ReservationDaoImpl implements ReservationDao {
         return null;
     }
 
+
+
     @Override
     public void saveReservation(Reservation reservation) {
-        String query = "INSERT INTO reservation (client_id, hotel_id, room_id, check_in_date, check_out_date, reservation_date, total_price, status) VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
+        String query = "INSERT INTO reservation (client_id, hotel_id, room_id, check_in_date, check_out_date, reservation_date, total_price, reservation_status) VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
         try (PreparedStatement preparedStatement = connection.prepareStatement(query)) {
             preparedStatement.setInt(1, reservation.getClient().getId());
             preparedStatement.setInt(2, reservation.getHotel().getId());
             preparedStatement.setInt(3, reservation.getRoom().getId());
-            preparedStatement.setDate(4, new java.sql.Date(reservation.getCheckInDate().getTime())); // Correct conversion
-            preparedStatement.setDate(5, new java.sql.Date(reservation.getCheckOutDate().getTime())); // Correct conversion
-            preparedStatement.setTimestamp(6, new java.sql.Timestamp(reservation.getReservationDate().getTime())); // Correct conversion
+            preparedStatement.setDate(4, new java.sql.Date(reservation.getCheckInDate().getTime()));
+            preparedStatement.setDate(5, new java.sql.Date(reservation.getCheckOutDate().getTime()));
+            preparedStatement.setTimestamp(6, new java.sql.Timestamp(reservation.getReservationDate().getTime()));
             preparedStatement.setBigDecimal(7, reservation.getTotalPrice());
-            preparedStatement.setString(8, reservation.getStatus().name());
+            preparedStatement.setString(8, reservation.getReservationStatus().name()); // Set the status to 'Confirmed'
             preparedStatement.executeUpdate();
         } catch (SQLException e) {
-            e.printStackTrace();  // Consider using a logger
+            e.printStackTrace(); // Consider using a logger
         }
     }
+
+
+
 
 
     @Override
@@ -79,7 +98,7 @@ public class ReservationDaoImpl implements ReservationDao {
             return;
         }
 
-        String query = "UPDATE reservation SET client_id = ?, hotel_id = ?, room_id = ?, check_in_date = ?, check_out_date = ?, reservation_date = ?, total_price = ?, status = ? WHERE id = ?";
+        String query = "UPDATE reservation SET client_id = ?, hotel_id = ?, room_id = ?, check_in_date = ?, check_out_date = ?, reservation_date = ?, total_price = ?, reservation_status = ? WHERE id = ?";
         try (PreparedStatement preparedStatement = connection.prepareStatement(query)) {
             preparedStatement.setInt(1, reservation.getClient().getId());
             preparedStatement.setInt(2, reservation.getHotel().getId());
@@ -88,7 +107,7 @@ public class ReservationDaoImpl implements ReservationDao {
             preparedStatement.setDate(5, new java.sql.Date(reservation.getCheckOutDate().getTime())); // Correct conversion
             preparedStatement.setTimestamp(6, new java.sql.Timestamp(reservation.getReservationDate().getTime())); // Correct conversion
             preparedStatement.setBigDecimal(7, reservation.getTotalPrice());
-            preparedStatement.setString(8, reservation.getStatus().name());
+            preparedStatement.setString(8, reservation.getReservationStatus().name());
             preparedStatement.setInt(9, reservation.getId());
             preparedStatement.executeUpdate();
         } catch (SQLException e) {
@@ -162,7 +181,7 @@ public class ReservationDaoImpl implements ReservationDao {
                 resultSet.getDate("check_out_date"),
                 resultSet.getTimestamp("reservation_date"),
                 resultSet.getBigDecimal("total_price"),
-                ReservationStatus.valueOf(resultSet.getString("status"))
+                ReservationStatus.valueOf(resultSet.getString("reservation_status"))
         );
     }
 
@@ -234,5 +253,105 @@ public class ReservationDaoImpl implements ReservationDao {
 
         return reservations;
     }
+    @Override
+    public List<Reservation> getReservationsByRoomId(int roomId) {
+        List<Reservation> reservations = new ArrayList<>();
+        try {
+            String query = "SELECT * FROM reservation WHERE room_id = ?";
+            PreparedStatement statement = connection.prepareStatement(query);
+            statement.setInt(1, roomId);
+            ResultSet resultSet = statement.executeQuery();
+
+            while (resultSet.next()) {
+                // Fetch related Client, Hotel, and Room objects
+                Client client = clientDao.getClientById(resultSet.getInt("client_id"));
+                Hotel hotel = hotelDao.getHotelById(resultSet.getInt("hotel_id"));
+                Room room = roomDao.getRoomById(resultSet.getInt("room_id"));
+
+                // Create Reservation object with fetched entities
+                Reservation reservation = new Reservation(
+                        resultSet.getInt("id"),
+                        client,
+                        hotel,
+                        room,
+                        resultSet.getDate("check_in_date"),
+                        resultSet.getDate("check_out_date"),
+                        resultSet.getTimestamp("reservation_date"),
+                        resultSet.getBigDecimal("total_price"),
+                        ReservationStatus.valueOf(resultSet.getString("status")) // Assuming status is stored as a String
+                );
+                reservations.add(reservation);
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return reservations;
+    }
+    @Override
+    public void cancelReservation(int reservationId) {
+        String query = "UPDATE reservation SET status = ? WHERE id = ?";
+        try (PreparedStatement preparedStatement = connection.prepareStatement(query)) {
+            preparedStatement.setString(1, ReservationStatus.Canceled.name());
+            preparedStatement.setInt(2, reservationId);
+            preparedStatement.executeUpdate();
+        } catch (SQLException e) {
+            e.printStackTrace();  // Consider using a logger
+        }
+    }
+    @Override
+    public List<Reservation> getClientReservations(int clientId) {
+        List<Reservation> reservations = new ArrayList<>();
+        String query = "SELECT * FROM reservation WHERE client_id = ?";
+        try (PreparedStatement preparedStatement = connection.prepareStatement(query)) {
+            preparedStatement.setInt(1, clientId);
+            ResultSet resultSet = preparedStatement.executeQuery();
+            while (resultSet.next()) {
+                reservations.add(createReservationFromResultSet(resultSet));
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();  // Consider using a logger
+        }
+        return reservations;
+    }
+    @Override
+    public List<Reservation> getReservationsByRoomType(RoomType roomType) {
+        List<Reservation> reservations = new ArrayList<>();
+        String query = "SELECT r.* FROM reservation AS res " +
+                "JOIN room AS r ON res.room_id = r.id " +
+                "WHERE r.room_type = ?";
+        try (PreparedStatement preparedStatement = connection.prepareStatement(query)) {
+            preparedStatement.setString(1, roomType.name());  // Assuming RoomType is an enum
+            ResultSet resultSet = preparedStatement.executeQuery();
+            while (resultSet.next()) {
+                reservations.add(createReservationFromResultSet(resultSet));
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return reservations;
+    }
+
+
+    @Override
+    public boolean bookAvailableRoom(RoomType roomType) {
+        Optional<String> availableRoomId = roomAvailability.entrySet().stream()
+                .filter(Map.Entry::getValue)
+                .map(Map.Entry::getKey)
+                .findFirst();
+
+        if (availableRoomId.isPresent()) {
+            String roomId = availableRoomId.get();
+            roomAvailability.put(roomId, false);
+
+            Reservation reservation = new Reservation();
+            reservation.setRoom(roomDao.getRoomById(Integer.parseInt(roomId)));
+            reservation.setReservationStatus(ReservationStatus.Confirmed);
+            reservation.setReservationDate(new Date());
+
+            saveReservation(reservation);
+            return true;
+        }
+    }
+
 
 }

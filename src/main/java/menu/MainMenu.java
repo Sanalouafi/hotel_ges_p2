@@ -14,6 +14,7 @@ public class MainMenu {
     private PricingService pricingService;
     private SeasonService seasonService;
     private StatisticService statisticService;
+    private RoomService roomService;  // Added RoomService
 
     public MainMenu() {
         this.scanner = new Scanner(System.in);
@@ -24,6 +25,7 @@ public class MainMenu {
         this.pricingService = new PricingService();
         this.seasonService = new SeasonService();
         this.statisticService = new StatisticService();
+        this.roomService = new RoomService();  // Initialize RoomService
     }
 
     public void showMainMenu() {
@@ -37,7 +39,8 @@ public class MainMenu {
             System.out.println("6. Pricing");
             System.out.println("7. Seasons");
             System.out.println("8. Statistics");
-            System.out.println("9. Exit");
+            System.out.println("9. Rooms");  // Added Rooms option
+            System.out.println("10. Exit");  // Incremented exit to 10
 
             int choice;
             try {
@@ -73,6 +76,9 @@ public class MainMenu {
                     new StatisticMenu(statisticService).showStatisticMenu();
                     break;
                 case 9:
+                    new RoomMenu(roomService).displayRoomMenu();  // Added RoomMenu
+                    break;
+                case 10:  // Changed exit option to 10
                     System.out.println("Exiting...");
                     return;  // Exit the application
                 default:

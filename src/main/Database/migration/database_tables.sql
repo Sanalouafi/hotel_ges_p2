@@ -58,9 +58,8 @@ CREATE TABLE Pricing (
                              season_id INT REFERENCES Season(id) ON DELETE CASCADE NULL,
                              event_id INT REFERENCES Event(id) ON DELETE CASCADE NULL,
                              base_price DECIMAL(10, 2) NOT NULL,
-                             price_multiplier DECIMAL(5, 2) DEFAULT 1.0,
-                             start_date DATE NOT NULL,
-                             end_date DATE NOT NULL
+                             price_multiplier DECIMAL(5, 2) DEFAULT 1.0
+
 );
 CREATE TYPE ReservationStatus AS ENUM ('Canceled', 'Confirmed');
 CREATE TABLE Reservation (
@@ -71,5 +70,6 @@ CREATE TABLE Reservation (
                              check_in_date DATE NOT NULL,
                              check_out_date DATE NOT NULL,
                              reservation_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+                             reservation_status ReservationStatus DEFAULT 'Confirmed',
                              total_price DECIMAL(10, 2)
 );

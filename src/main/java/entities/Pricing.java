@@ -11,21 +11,18 @@ public class Pricing {
     private Event event;
     private BigDecimal basePrice;
     private BigDecimal priceMultiplier;
-    private Date startDate;
-    private Date endDate;
 
-    public Pricing(int id, RoomType roomType, Season season, Event event, BigDecimal basePrice, BigDecimal priceMultiplier, Date startDate, Date endDate) {
+
+    public Pricing(int id, RoomType roomType, Season season, Event event, BigDecimal basePrice, BigDecimal priceMultiplier) {
         this.id = id;
         this.roomType = roomType;
         this.season = season;
         this.event = event;
         this.basePrice = basePrice;
         this.priceMultiplier = priceMultiplier;
-        this.startDate = startDate;
-        this.endDate = endDate;
+
     }
 
-    // Getters and Setters
     public int getId() {
         return id;
     }
@@ -74,21 +71,6 @@ public class Pricing {
         this.priceMultiplier = priceMultiplier;
     }
 
-    public Date getStartDate() {
-        return startDate;
-    }
-
-    public void setStartDate(Date startDate) {
-        this.startDate = startDate;
-    }
-
-    public Date getEndDate() {
-        return endDate;
-    }
-
-    public void setEndDate(Date endDate) {
-        this.endDate = endDate;
-    }
 
     @Override
     public String toString() {
@@ -99,8 +81,7 @@ public class Pricing {
                 ", event=" + (event != null ? event.toString() : "None") +
                 ", basePrice=" + basePrice +
                 ", priceMultiplier=" + priceMultiplier +
-                ", startDate=" + startDate +
-                ", endDate=" + endDate +
+
                 '}';
     }
 }

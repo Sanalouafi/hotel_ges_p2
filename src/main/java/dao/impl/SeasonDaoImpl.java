@@ -9,7 +9,11 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class SeasonDaoImpl implements SeasonDao {
-    private Connection connection = DatabaseConnection.getInstance().getConnection();
+    private Connection connection;
+
+    public SeasonDaoImpl() {
+        this.connection = DatabaseConnection.getInstance().getConnection();
+    }
 
     @Override
     public List<Season> getAllSeasons() {
@@ -43,10 +47,9 @@ public class SeasonDaoImpl implements SeasonDao {
 
     @Override
     public void saveSeason(Season season) {
-        // Validate that the end date is after the start date
-        if (!isValidDateRange(season.getStartDate(), season.getEndDate())) {
+        if (!isValidDateRangeSeason(season.getStartDate(), season.getEndDate())) {
             System.out.println("Error: End date must be after the start date.");
-            return; // Exit the method if validation fails
+            return;
         }
 
         String query = "INSERT INTO Season (name, start_date, end_date) VALUES (?, ?, ?)";
@@ -54,15 +57,23 @@ public class SeasonDaoImpl implements SeasonDao {
             preparedStatement.setString(1, season.getName());
             preparedStatement.setDate(2, new java.sql.Date(season.getStartDate().getTime()));
             preparedStatement.setDate(3, new java.sql.Date(season.getEndDate().getTime()));
+
             preparedStatement.executeUpdate();
-            ResultSet resultSet = preparedStatement.getGeneratedKeys();
-            if (resultSet.next()) {
-                season.setId(resultSet.getInt(1));
+
+            try (ResultSet resultSet = preparedStatement.getGeneratedKeys()) {
+                if (resultSet.next()) {
+                    season.setId(resultSet.getInt(1));
+                }
             }
         } catch (SQLException e) {
             e.printStackTrace();
         }
     }
+
+    private boolean isValidDateRangeSeason(java.util.Date startDate, java.util.Date endDate) {
+        return endDate.after(startDate);
+    }
+
 
     @Override
     public void updateSeason(Season season) {
@@ -83,11 +94,6 @@ public class SeasonDaoImpl implements SeasonDao {
         }
     }
 
-    private boolean isValidDateRange(java.util.Date startDate, java.util.Date endDate) {
-        return endDate.after(startDate);
-    }
-
-
     @Override
     public void deleteSeason(int seasonId) {
         String query = "DELETE FROM Season WHERE id = ?";
@@ -97,6 +103,10 @@ public class SeasonDaoImpl implements SeasonDao {
         } catch (SQLException e) {
             e.printStackTrace();
         }
+    }
+
+    private boolean isValidDateRange(java.util.Date startDate, java.util.Date endDate) {
+        return endDate.after(startDate);
     }
 
     private Season createSeasonFromResultSet(ResultSet resultSet) throws SQLException {
