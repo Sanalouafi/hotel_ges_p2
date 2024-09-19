@@ -1,5 +1,6 @@
 package main.java.service;
 
+import main.java.dao.ReservationDao;
 import main.java.entities.*;
 import main.java.dao.impl.*;
 import main.java.enums.RoomType;
@@ -23,7 +24,7 @@ public class ReservationService {
     private HotelDaoImpl hotelDaoImpl;
     private ClientDaoImpl clientDaoImpl;
     private Scanner scanner;
-
+    ReservationDao reservationDao = null;
     public ReservationService() {
         this.reservationDaoImpl = new ReservationDaoImpl();
         this.roomDaoImpl = new RoomDaoImpl();
@@ -173,6 +174,7 @@ public class ReservationService {
         return null;
     }
     public boolean bookRoom(RoomType roomType) {
+
         return reservationDao.bookAvailableRoom(roomType);
     }
 }
